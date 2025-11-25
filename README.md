@@ -1,6 +1,6 @@
 # Exercise 6: Feed-Forward Neural Networks
 
-Deadline: 19.11.2025 23:59
+Deadline: 26.11.2025 23:59
 
 This is the sixth exercise, and it covers designing and training simple neural networks. We will use the [keras API](https://keras.io): You find [introductory guides](https://keras.io/guides/) as well as the [reference documentation](https://keras.io/api/) on its web page.
 
