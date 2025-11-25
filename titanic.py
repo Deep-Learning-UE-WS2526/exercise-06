@@ -45,6 +45,7 @@ model1.compile(loss='mean_squared_error', optimizer='sgd', metrics=['accuracy'])
 model1.fit(x_train, y_train, epochs=50, batch_size=10)
 
 results = model1.evaluate(x_test, y_test)
+print("Model 1:")
 print(f"Test Loss: {results[0]}, Test Accuracy: {results[1]}")
 
 # Calculate F1-score manually
@@ -69,6 +70,7 @@ model2.compile(loss='mean_squared_error', optimizer='sgd', metrics=['accuracy'])
 model2.fit(x_train, y_train, epochs=50, batch_size=20)
 
 results2 = model2.evaluate(x_test, y_test)
+print("Model 2:")
 print(f"Test Loss: {results2[0]}, Test Accuracy: {results2[1]}")
 
 # Calculate F1-score manually
@@ -93,6 +95,7 @@ model3.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics
 model3.fit(x_train, y_train, epochs=60, batch_size=20)
 
 results3 = model3.evaluate(x_test, y_test)
+print("Model 3:")
 print(f"Test Loss: {results3[0]}, Test Accuracy: {results3[1]}")
 
 # Calculate F1-score manually
@@ -102,7 +105,25 @@ f1_3 = f1_score(y_test, y_pred_classes3)
 print(f"F1-Score: {f1_3:.4f}")
 
 
+model4 = keras.Sequential()
+model4.add(keras.layers.InputLayer(shape=(x_train.shape[1],)))
+model4.add(keras.layers.Dense(30, activation='relu'))
+model4.add(keras.layers.Dense(15, activation='relu'))
+model4.add(keras.layers.Dense(2, activation='softmax'))
 
+model4.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+
+model4.fit(x_train, y_train, epochs=60, batch_size=20)
+
+results4 = model4.evaluate(x_test, y_test)
+print("Model 4:")
+print(f"Test Loss: {results4[0]}, Test Accuracy: {results4[1]}")
+
+# Calculate F1-score manually
+y_pred4 = model4.predict(x_test)
+y_pred_classes4 = np.argmax(y_pred4, axis=1)
+f1_4 = f1_score(y_test, y_pred_classes4)
+print(f"F1-Score: {f1_4:.4f}")
 
 
 
