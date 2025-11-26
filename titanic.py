@@ -46,3 +46,46 @@ print("precision: "+ str(precision_score(y_test, y_pred)))
 print("recall: "+ str(recall_score(y_test, y_pred)))
 print("f1: "+ str(f1_score(y_test, y_pred)))
 
+################### exercise-06 ###################
+
+# 4.1
+import numpy as np
+from tensorflow import keras
+from tensorflow.keras import layers
+import tensorflow as tf
+
+# set up model
+model1 = keras.Sequential()
+model1.add(layers.Input(shape =(9,)))
+model1.add(layers.Dense(10, activation = "softmax"))
+model1.add(layers.Dense(2, activation="softmax")) # output
+# compile
+model1.compile(loss ="sparse_categorical_crossentropy", optimizer ="sgd", metrics =["accuracy"])
+
+model1.fit(x_train, y_train, epochs=5, verbose="auto")
+y_pred1 = tf.argmax(model1.predict(x_test), axis=1).numpy()
+
+from sklearn.metrics import precision_score, recall_score, f1_score
+print("Model 1:")
+print("precision = ", precision_score(y_test, y_pred1, average="weighted"))
+print("recall = ", recall_score(y_test, y_pred1, average="weighted"))
+print("f-score = ", f1_score(y_test, y_pred1, average="weighted"))
+print()
+
+# 4.2
+model2 = keras.Sequential()
+model2.add(layers.Input(shape =(9,)))
+model2.add(layers.Dense(20, activation = "sigmoid"))
+model2.add(layers.Dense(10, activation = "relu"))
+model2.add(layers.Dense(2, activation="softmax"))
+#compile
+model2.compile(loss ="sparse_categorical_crossentropy", optimizer ="sgd", metrics =["accuracy"])
+
+model2.fit(x_train, y_train, epochs=5, verbose="auto")
+y_pred2 = tf.argmax(model2.predict(x_test), axis=1).numpy()
+
+from sklearn.metrics import precision_score, recall_score, f1_score
+print("Model 2:")
+print("precision = ", precision_score(y_test, y_pred2, average="weighted"))
+print("recall = ", recall_score(y_test, y_pred2, average="weighted"))
+print("f-score = ", f1_score(y_test, y_pred2, average="weighted"))
