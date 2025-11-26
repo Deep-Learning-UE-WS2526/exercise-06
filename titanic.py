@@ -1,5 +1,6 @@
 import pandas as pd
 
+
 # read the data from a CSV file (included in the repository)
 df = pd.read_csv("data/train.csv")
 
@@ -42,7 +43,74 @@ y_pred = classifier.predict(x_test)
 
 from sklearn.metrics import precision_score, recall_score, f1_score
 
-print("precision: "+ str(precision_score(y_test, y_pred)))
+""" print("precision: "+ str(precision_score(y_test, y_pred)))
 print("recall: "+ str(recall_score(y_test, y_pred)))
-print("f1: "+ str(f1_score(y_test, y_pred)))
+print("f1: "+ str(f1_score(y_test, y_pred))) """
+
+#-------------------------------------------------------------------------------
+
+import numpy as np 
+import keras as kd 
+from keras import layers 
+from keras.metrics import F1Score
+from keras.models import Sequential
+from keras.layers import Dense
+ 
+
+#Ich benutze das Sequential aus Keras
+model = kd.Sequential() 
+model.add(layers.Input(shape=(9,))) #9 Features, wieso ist das wichtig? 
+model.add(layers.Dense(10, activation="softmax")) 
+model.add(layers.Dense(2, activation="softmax"))
+
+
+
+model.compile(
+    loss="sparse_categorical_crossentropy",  # oder categorical_crossentropy
+    optimizer="sgd",
+    metrics=["accuracy"]
+)
+
+#Wie hängt die Compile Mehtod mit der aktivation zusammen? Optimizer ist ja nur ein String, was sind loss und metrics?
+
+model.fit(x_train, y_train, epochs=10, batch_size=5)
+
+# Was sind epochs, was sind batch sizes? 
+
+y_pred_keras_1 = model.predict(x_test, batch_size=None, verbose="auto", steps=None, callbacks=None)
+y_pred_keras_1_final = np.argmax(y_pred_keras_1, axis=1)      # (n_samples,)
+
+
+
+print("f1: "+ str(f1_score(y_test, y_pred_keras_1_final)))
+
+
+
+#-------------------------------------------------------------------------------
+
+model_two = kd.Sequential() 
+model_two.add(layers.Input(shape=(9,)))
+model_two.add(layers.Dense(20, activation="sigmoid")) 
+model_two.add(layers.Dense(10, activation="relu")) 
+model_two.add(layers.Dense(2, activation="softmax"))
+
+
+
+model_two.compile(
+    loss="sparse_categorical_crossentropy",  # oder categorical_crossentropy
+    optimizer="sgd",
+    metrics=["accuracy"]
+)
+model_two.fit(x_train, y_train, epochs=10, batch_size=5)
+
+y_pred_keras_2 = model_two.predict(x_test, batch_size=None, verbose="auto", steps=None, callbacks=None)
+y_pred_keras_2_final = np.argmax(y_pred_keras_2, axis=1)      # (n_samples,)
+
+
+print("f1: "+ str(f1_score(y_test, y_pred_keras_2_final)))
+
+
+
+
+
 
