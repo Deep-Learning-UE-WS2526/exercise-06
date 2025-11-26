@@ -1,4 +1,9 @@
 import pandas as pd
+import numpy as np
+import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import layers
+import pandas as pd
 
 # read the data from a CSV file (included in the repository)
 df = pd.read_csv("data/train.csv")
@@ -45,4 +50,55 @@ from sklearn.metrics import precision_score, recall_score, f1_score
 print("precision: "+ str(precision_score(y_test, y_pred)))
 print("recall: "+ str(recall_score(y_test, y_pred)))
 print("f1: "+ str(f1_score(y_test, y_pred)))
+
+
+# 5. Set up a network with a single hidden layer 
+
+
+input_dim = x_train.shape[1]   
+
+model1 = keras.Sequential()
+model1.add(layers.Input(shape=(input_dim,)))
+model1.add(layers.Dense(10, activation="softmax"))
+model1.add(layers.Dense(2, activation="softmax"))
+
+model1.compile(
+    loss="sparse_categorical_crossentropy",
+    optimizer="sgd",
+    metrics=["accuracy"]
+)
+
+model1.fit(x_train, y_train, epochs=20, batch_size=16, verbose=0)
+
+probs1 = model1.predict(x_test)
+y_pred1 = np.argmax(probs1, axis=1)
+
+print("Model 1 precision:", precision_score(y_test, y_pred1))
+print("Model 1 recall   :", recall_score(y_test, y_pred1))
+print("Model 1 f1       :", f1_score(y_test, y_pred1))
+
+
+# 6. Create a network with 2 hidden layers 
+
+
+model2 = keras.Sequential()
+model2.add(layers.Input(shape=(input_dim,)))
+model2.add(layers.Dense(20, activation="sigmoid"))
+model2.add(layers.Dense(10, activation="relu"))
+model2.add(layers.Dense(2, activation="softmax"))
+
+model2.compile(
+    loss="sparse_categorical_crossentropy",
+    optimizer="sgd",
+    metrics=["accuracy"]
+)
+
+model2.fit(x_train, y_train, epochs=20, batch_size=16, verbose=0)
+
+probs2 = model2.predict(x_test)
+y_pred2 = np.argmax(probs2, axis=1)
+
+print("Model 2 precision:", precision_score(y_test, y_pred2))
+print("Model 2 recall   :", recall_score(y_test, y_pred2))
+print("Model 2 f1       :", f1_score(y_test, y_pred2))
 
