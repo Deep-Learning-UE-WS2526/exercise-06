@@ -1,4 +1,10 @@
 import pandas as pd
+from tensorflow import keras
+from tensorflow.keras import layers
+import numpy as np
+from sklearn.metrics import precision_score, recall_score, f1_score
+import tensorflow as tf
+
 
 # read the data from a CSV file (included in the repository)
 df = pd.read_csv("data/train.csv")
@@ -8,7 +14,7 @@ df = pd.read_csv("data/train.csv")
 df = df.drop("Name", axis=1)
 df = df.drop("PassengerId", axis=1)
 
-# 2. Convert all non-numeric columns into numeric ones. The non-numeric columns are "Sex", "Cabin", "Ticket" and "Embarked".
+# 2. Convert all non-numeric columns into numeric ones (kategorische Werte zu numerische). The non-numeric columns are "Sex", "Cabin", "Ticket" and "Embarked".
 def make_numeric(df):
   df["Sex"] = pd.factorize(df["Sex"])[0]
   df["Cabin"] = pd.factorize(df["Cabin"])[0]
@@ -22,8 +28,8 @@ df = df.dropna()
 
 # ## Step 4
 # 1. As a next step, we need to split the input features from the training labels. This can be done easily with `pandas`.
-y = df["Survived"]
-x = df.drop("Survived", axis=1)
+y = df["Survived"] #Spalte "Survived" aus dem DataFrame df entnommen und in die Variable y gespeichert
+x = df.drop("Survived", axis=1) #neue DataFrame-Variable x erzeugt, die alle Spalten von df enthält außer der Spalte "Survived"
 
 # 2. Secondly, we need to split training and test data. This can be done with the function [`sklearn.model_selection.train_test_split()`](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.train_test_split.html#sklearn.model_selection.train_test_split) from the `scikit-learn` library.
 
@@ -45,4 +51,27 @@ from sklearn.metrics import precision_score, recall_score, f1_score
 print("precision: "+ str(precision_score(y_test, y_pred)))
 print("recall: "+ str(recall_score(y_test, y_pred)))
 print("f1: "+ str(f1_score(y_test, y_pred)))
+
+
+
+# Exercise 06
+
+model = keras.Sequential()
+model.add(layers.Input(shape=(9,)))
+model.add(layers.Dense(20, activation="sigmoid"))
+model.add(layers.Dense(10, activation="relu"))
+model.add(layers.Dense(2, activation="softmax")) #Größe 2 Neuronen für Output: Klasse 0 und 1
+
+#Modell kompilieren
+model.compile(loss="sparse_categorical_crossentropy",optimizer="sgd",metrics=["accuracy"])
+
+#Modell trainieren
+model.fit(x_train, y_train, epochs=100, batch_size=5)
+
+probs = model.predict(x_test) 
+y_pred = np.argmax(probs, axis=1)
+
+print("precision:", precision_score(y_test, y_pred, zero_division=0))
+print("recall:   ", recall_score(y_test, y_pred, zero_division=0))
+print("f1:       ", f1_score(y_test, y_pred, zero_division=0))
 
